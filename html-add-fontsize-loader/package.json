@@ -2,7 +2,7 @@
   "name": "html-add-font-size",
   "version": "1.0.0",
   "description": "resize html's fontSize in mobile",
-  "main": "html-add-font-size.js",
+  "main": "html-add-fontsize-loader.js",
   "keywords": ["loader", "webpack", "html", "font-size"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
