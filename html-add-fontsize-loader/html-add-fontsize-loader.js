@@ -25,5 +25,7 @@ module.exports = function (source) {
             }
         </script>
     `
-    return source.replace(/<head[^>]*>([\s\S]*)<\/head>/g, `$1${ string }`)
+    return source.replace(/<head[^>]*>([\s\S]*)<\/head>/g, ($1, $2) => {
+        return $1.replace($2, $2 + string)
+    })
 }
