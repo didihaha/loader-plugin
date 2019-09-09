@@ -1,3 +1,4 @@
+// 该段代码中的参数5后面要换为可配置项，并将addAssetHtmlPlugin的功能集成进来
 const string = `
         <script>
             var u = navigator.userAgent.toLowerCase()
