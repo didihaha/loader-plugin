@@ -2,7 +2,7 @@
     "name": "add-asset-to-html-plugin",
     "version": "1.0.0",
     "description": "resize html's fontSize in mobile",
-    "main": "add-asset-to-html-plugin.js",
+    "main": "lib/index.js",
     "keywords": ["plugin", "webpack", "html", "assets"],
     "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1"
