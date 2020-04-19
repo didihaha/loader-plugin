@@ -130,11 +130,12 @@ class AddAssetToHtmlPlugin {
       });
       compiler.hooks.emit.tap('AddAssetToHtmlPlugin', compilation => {
         // 获取html文件名，从而获取html里面的代码片段
-        const htmlName = Object.keys(compilation.assets).filter(html => /html$/.test(html))
-        let htmlString = compilation.assets[htmlName].source()
+        const htmlNames = Object.keys(compilation.assets).filter(html => /html$/.test(html))
+        htmlNames.forEach(htmlName => {
+          let htmlString = compilation.assets[htmlName].source()
 
-        // 之前已经添加过的模块再次处理时候需要过滤掉，webpack启动时候会调用两次plugin里面的插件
-        this.modules.filter(item => !this.addedModules.includes(item)).forEach(option => {
+          // 之前已经添加过的模块再次处理时候需要过滤掉，webpack启动时候会调用两次plugin里面的插件
+          this.modules.filter(item => !this.addedModules.includes(item)).forEach(option => {
             const { filepath, assetLocation = 'head' } = option
             let string = '', res = ''
             // 是js文件进行使用require引入，其它文件使用fs读取
@@ -151,24 +152,25 @@ class AddAssetToHtmlPlugin {
 
             // 不同参数将代码放入到不同的位置，且根据不同文件类型生成不同的标签插入该断代码
             if (assetLocation === 'head') {
-                res = htmlString.replace(/<head[^>]*>([\s\S]*)<\/head>/g, ($1, $2) => {
-                  if (isJs(filepath)) {
-                    return $1.replace($2, $2 + `<script type="text/javascript">${ string }</script>`)
-                  } else {
-                    return $1.replace($2, $2 + `<style>${ string }</style>`)
-                  }
-                })
+              res = htmlString.replace(/<head[^>]*>([\s\S]*)<\/head>/g, ($1, $2) => {
+                if (isJs(filepath)) {
+                  return $1.replace($2, $2 + `<script type="text/javascript">${string}</script>`)
+                } else {
+                  return $1.replace($2, $2 + `<style>${string}</style>`)
+                }
+              })
             } else if (assetLocation === 'frontOfOtherScripts') {
-                res = htmlString.replace(/<body[^>]*>([\s\S]*)(<script[^>]*><\/script>)<\/body>/g, ($1, $2, $3) => {
-                    if (isJs(filepath)) {
-                      return $1.replace($3, `<script type="text/javascript">${ string }</script>${ $3 }`)
-                    } else {
-                      return $1.replace($3, `<style>${ string }</style>${ $3 }`)
-                    }
-                })
+              res = htmlString.replace(/<body[^>]*>([\s\S]*)(<script[^>]*><\/script>)<\/body>/g, ($1, $2, $3) => {
+                if (isJs(filepath)) {
+                  return $1.replace($3, `<script type="text/javascript">${string}</script>${$3}`)
+                } else {
+                  return $1.replace($3, `<style>${string}</style>${$3}`)
+                }
+              })
             }
             compilation.assets[htmlName].source = () => res
             this.addedModules.push(option)
+          })
         })
       })
       alterAssetTagsHook.tap('AddAssetToHtmlPlugin', htmlPluginData => {
