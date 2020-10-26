@@ -138,17 +138,7 @@ class AddAssetToHtmlPlugin {
           this.modules.filter(item => !this.addedModules.includes(item)).forEach(option => {
             const { filepath, assetLocation = 'head' } = option
             let string = '', res = ''
-            // 是js文件进行使用require引入，其它文件使用fs读取
-            if (isJs(filepath)) {
-              const require_module = require(filepath)
-              if (typeof require_module === 'function') {
-                string = require_module()
-              } else {
-                string = require_module
-              }
-            } else {
-              string = require('fs').readFileSync(filepath)
-            }
+            string = require('fs').readFileSync(filepath)
 
             // 不同参数将代码放入到不同的位置，且根据不同文件类型生成不同的标签插入该断代码
             if (assetLocation === 'head') {
